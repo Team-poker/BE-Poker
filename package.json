@@ -1,0 +1,12 @@
+{
+  "name": "be-pointing-poker",
+  "version": "1.0.0",
+  "description": "Задание в рамках курса RS-School React 2021 Q3",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.1.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
