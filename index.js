@@ -1,41 +1,38 @@
 const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http, {
-  cors: {
-    origin: '*'
-  }
-});
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const cors = require('cors');
 const port = process.env.PORT || 3000;
-const log = console.log;
+const { getCurrentUser, userDisconnect, joinUser } = require("./users.js");
 
-const onConnection = (socket) => {
-  // выводим сообщение о подключении пользователя
-  log('User connected')
+app.use(cors());
 
-  // получаем название комнаты из строки запроса "рукопожатия"
-  const { lobbyId } = socket.handshake.query
-  // сохраняем название комнаты в соответствующем свойстве сокета
-  socket.lobbyId = lobbyId
-
-  // присоединяемся к комнате (входим в нее)
-  socket.join(lobbyId)
-
-  // регистрируем обработчики
-  // обратите внимание на передаваемые аргументы
-  registerMessageHandlers(io, socket)
-  registerUserHandlers(io, socket)
-
-  // обрабатываем отключение сокета-пользователя
-  socket.on('disconnect', () => {
-    // выводим сообщение
-    log('User disconnected')
-    // покидаем комнату
-    socket.leave(lobbyId)
+io.on("connection", (socket) => {
+  //for a new user joining the room
+  socket.on("joinRoom", ({ username, roomname }) => {
+    //* create user
+    const user = joinUser(socket.id, username, roomname);
+    console.log(socket.id, "=id");
+    socket.join(user.room);
   })
-}
 
-io.on('connection', onConnection);
+  socket.on("chat", (text) => {
+    //gets the room user and the message sent
+    const user = getCurrentUser(socket.id);
 
-http.listen(port, () => {
+    io.to(user.room).emit("message", {
+      userId: user.id,
+      username: user.username,
+      text: text,
+    });
+  });
+
+  socket.on("disconnect", () => {
+    //the user is deleted from array of users and a left room message displayed
+    const user = userDisconnect(socket.id);
+  });
+})
+
+server.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
