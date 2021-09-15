@@ -4,9 +4,14 @@
   "description": "Задание в рамках курса RS-School React 2021 Q3",
   "dependencies": {
     "express": "^4.17.1",
+    "nanoid": "^3.1.25",
     "socket.io": "^4.1.2"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }
