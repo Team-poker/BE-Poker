@@ -34,6 +34,7 @@ io.on("connection", (socket) => {
       jobPosition: user.jobPosition,
       text: text,
     });
+    console.log(user, text);
   });
 
   socket.on("disconnect", () => {
