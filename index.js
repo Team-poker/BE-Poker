@@ -17,13 +17,15 @@ io.on("connection", (socket) => {
     socket.join(user.roomName);
 
     socket.emit("message", {
-      userId: user.id,
-      username: user.firstName,
+      userId: '0',
+      username: 'Poker',
+      lastName: 'Pointing', 
+      jobPosition: 'admin',
       text: `Welcome ${user.firstName}`,
     });
   })
 
-  socket.on("chat", (text) => {
+  socket.on("chat", (message) => {
     //gets the room user and the message sent
     const user = getCurrentUser(socket.id);
 
@@ -32,9 +34,8 @@ io.on("connection", (socket) => {
       firstName: user.firstName, 
       lastName: user.lastName, 
       jobPosition: user.jobPosition,
-      text: text,
+      text: message.text,
     });
-    console.log(user, text);
   });
 
   socket.on("disconnect", () => {
@@ -44,5 +45,5 @@ io.on("connection", (socket) => {
 })
 
 server.listen(port, () => {
-  console.log(`Socket.IO server running at http://localhost:${port}/`);
+  console.log(`Socket.IO server running at https://pointing-poker123.herokuapp.com/`);
 });
