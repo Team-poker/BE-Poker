@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
 
     socket.emit("message", {
       userId: '0',
-      username: 'Poker',
+      firstName: 'Poker',
       lastName: 'Pointing', 
       jobPosition: 'admin',
       text: `Welcome ${user.firstName}`,
