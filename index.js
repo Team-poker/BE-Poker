@@ -9,6 +9,7 @@ const port = process.env.PORT || 3000;
 const { getCurrentUser, userDisconnect, joinUser } = require("./users.js");
 
 io.on("connection", (socket) => {
+  socket.removeAllListeners()
   //for a new user joining the room
   socket.on("joinRoom", ({ firstName, lastName, jobPosition, roomName }) => {
     //* create user
@@ -18,10 +19,18 @@ io.on("connection", (socket) => {
 
     socket.emit("message", {
       userId: '0',
-      firstName: 'Poker',
-      lastName: 'Pointing', 
+      firstName: 'Pointing',
+      lastName: 'Poker', 
       jobPosition: 'admin',
       text: `Welcome ${user.firstName}`,
+    });
+
+    socket.broadcast.to(user.roomName).emit("message", {
+      userId: '0',
+      firstName: 'Pointing',
+      lastName: 'Poker', 
+      jobPosition: 'admin',
+      text: `${user.firstName} ${user.lastName} has joined the chat`,
     });
   })
 
