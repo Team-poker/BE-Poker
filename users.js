@@ -1,8 +1,9 @@
 const usersList = [];
 
 // joins the user to the specific chatroom
-function joinUser(id, firstName, lastName, jobPosition, roomName) {
-  const user = { id, firstName, lastName, jobPosition, roomName };
+function joinUser(id, firstName, lastName, jobPosition, roomName, dealer) {
+  if (usersList.length === 0) dealer = true;
+  const user = { id, firstName, lastName, jobPosition, roomName, dealer };
 
   usersList.push(user);
   console.log(usersList, "usersList");
@@ -15,6 +16,10 @@ console.log("user out", usersList);
 // Gets a particular user id to return the current user
 function getCurrentUser(id) {
   return usersList.find((user) => user.id === id);
+}
+
+function getUsersList() {
+  return usersList;
 }
 
 // called when the user leaves the chat and its user object deleted from array
@@ -30,4 +35,5 @@ module.exports = {
   joinUser,
   getCurrentUser,
   userDisconnect,
+  getUsersList,
 };
