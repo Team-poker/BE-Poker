@@ -67,6 +67,9 @@ io.on("connection", (socket) => {
         jobPosition: "admin",
         text: `${user.firstName} ${user.lastName} has joined the chat`,
       });
+      socket.on("gameSettings", ({ cards, issues }) => {
+        socket.broadcast.to(user.roomName).emit("startGame", { cards, issues });
+      });
     }
   );
 
