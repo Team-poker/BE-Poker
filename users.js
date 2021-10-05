@@ -22,6 +22,14 @@ function getUsersList() {
   return usersList;
 }
 
+function handleUserDisconnection(id) {
+  // Если ушел дилер - нужен новый дилер
+  const needNewDealer = usersList.every((user) => !user.dealer);
+  if (needNewDealer) usersList[0].dealer = true;
+
+  return usersList;
+}
+
 // called when the user leaves the chat and its user object deleted from array
 function userDisconnect(id) {
   const index = usersList.findIndex((user) => user.id === id);
@@ -36,4 +44,5 @@ module.exports = {
   getCurrentUser,
   userDisconnect,
   getUsersList,
+  handleUserDisconnection,
 };

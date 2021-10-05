@@ -11,6 +11,7 @@ const {
   userDisconnect,
   joinUser,
   getUsersList,
+  handleUserDisconnection,
 } = require("./users.js");
 
 const {updateVotes} = require('./votes.js');
@@ -88,7 +89,8 @@ io.on("connection", (socket) => {
       });
 
       socket.on("disconnect", () => {
-        const user = userDisconnect(socket.id);
+        const newUsers = handleUserDisconnection(socket.id);
+        io.to(user.roomName).emit("playerLeft", newUsers);
       });
     }
   );
