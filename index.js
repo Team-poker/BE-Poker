@@ -13,6 +13,8 @@ const {
   getUsersList,
 } = require("./users.js");
 
+const {updateVotes} = require('./votes.js');
+
 io.on("connection", (socket) => {
   socket.removeAllListeners();
   //for a new user joining the room
@@ -78,7 +80,12 @@ io.on("connection", (socket) => {
         socket.broadcast.to(user.roomName).emit("setIssue", name);
       });
 
-      socket.on("userVote", (vote) => console.log(vote));
+      // Получаем vote и возвращаем клиенту обновленный массив votes
+      socket.on("userVote", (vote) => {
+        const newVotes = updateVotes(vote);
+        console.log(newVotes, '= VOTES');
+        io.to(user.roomName).emit("newVotes", newVotes);
+      });
 
       socket.on("disconnect", () => {
         const user = userDisconnect(socket.id);
