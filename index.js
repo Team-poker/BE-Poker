@@ -75,8 +75,10 @@ io.on("connection", (socket) => {
       });
 
       socket.on("newActiveIssue", (name) => {
-        socket.broadcast.to(user.roomName).emit("setActiveIssue", name);
+        socket.broadcast.to(user.roomName).emit("setIssue", name);
       });
+
+      socket.on("userVote", (vote) => console.log(vote));
 
       socket.on("disconnect", () => {
         const user = userDisconnect(socket.id);
