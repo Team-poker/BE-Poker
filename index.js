@@ -43,6 +43,7 @@ io.on("connection", (socket) => {
       const usersList = getUsersList();
       socket.emit("usersList", usersList);
 
+      // При присоединении нового игрока передаем всем в комнате информацию о нем
       socket.broadcast.to(user.roomName).emit("newUser", {
         id: user.id,
         firstName: user.firstName,
@@ -67,8 +68,18 @@ io.on("connection", (socket) => {
         jobPosition: "admin",
         text: `${user.firstName} ${user.lastName} has joined the chat`,
       });
+
+      // При получении настроек игры от дилера - передаем всем игрокам
       socket.on("gameSettings", ({ cards, issues }) => {
         socket.broadcast.to(user.roomName).emit("startGame", { cards, issues });
+      });
+
+      socket.on("newActiveIssue", (name) => {
+        socket.broadcast.to(user.roomName).emit("setActiveIssue", name);
+      });
+
+      socket.on("disconnect", () => {
+        const user = userDisconnect(socket.id);
       });
     }
   );
