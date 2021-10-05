@@ -11,7 +11,10 @@ const {
   userDisconnect,
   joinUser,
   getUsersList,
+  handleUserDisconnection,
 } = require("./users.js");
+
+const {updateVotes} = require('./votes.js');
 
 io.on("connection", (socket) => {
   socket.removeAllListeners();
@@ -43,6 +46,7 @@ io.on("connection", (socket) => {
       const usersList = getUsersList();
       socket.emit("usersList", usersList);
 
+      // При присоединении нового игрока передаем всем в комнате информацию о нем
       socket.broadcast.to(user.roomName).emit("newUser", {
         id: user.id,
         firstName: user.firstName,
@@ -67,8 +71,26 @@ io.on("connection", (socket) => {
         jobPosition: "admin",
         text: `${user.firstName} ${user.lastName} has joined the chat`,
       });
+
+      // При получении настроек игры от дилера - передаем всем игрокам
       socket.on("gameSettings", ({ cards, issues }) => {
         socket.broadcast.to(user.roomName).emit("startGame", { cards, issues });
+      });
+
+      socket.on("newActiveIssue", (name) => {
+        socket.broadcast.to(user.roomName).emit("setIssue", name);
+      });
+
+      // Получаем vote и возвращаем клиенту обновленный массив votes
+      socket.on("userVote", (vote) => {
+        const newVotes = updateVotes(vote);
+        console.log(newVotes, '= VOTES');
+        io.to(user.roomName).emit("newVotes", newVotes);
+      });
+
+      socket.on("disconnect", () => {
+        const newUsers = handleUserDisconnection(socket.id);
+        io.to(user.roomName).emit("playerLeft", newUsers);
       });
     }
   );
