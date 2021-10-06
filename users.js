@@ -25,8 +25,21 @@ function getUsersList() {
 function handleUserDisconnection(id) {
   // Если ушел дилер - нужен новый дилер
   const needNewDealer = usersList.every((user) => !user.dealer);
-  if (needNewDealer) usersList[0].dealer = true;
+  if (needNewDealer && usersList.length > 0) usersList[0].dealer = true;
 
+  return usersList;
+}
+
+function clearUsers() {
+  usersList.splice(0, usersList.length);
+}
+
+function removeUser(id) {
+  const index = usersList.findIndex((user) => user.id === id);
+
+  if (index !== -1) {
+    usersList.splice(index, 1);
+  }
   return usersList;
 }
 
@@ -45,4 +58,6 @@ module.exports = {
   userDisconnect,
   getUsersList,
   handleUserDisconnection,
+  clearUsers,
+  removeUser,
 };

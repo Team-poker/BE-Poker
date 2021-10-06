@@ -12,6 +12,8 @@ const {
   joinUser,
   getUsersList,
   handleUserDisconnection,
+  clearUsers,
+  removeUser,
 } = require("./users.js");
 
 const {updateVotes} = require('./votes.js');
@@ -77,8 +79,13 @@ io.on("connection", (socket) => {
         socket.broadcast.to(user.roomName).emit("startGame", { cards, issues });
       });
 
+      // Оповещаем игроков, когда дилер выбрал Issue на странице игры
       socket.on("newActiveIssue", (name) => {
         socket.broadcast.to(user.roomName).emit("setIssue", name);
+      });
+
+      socket.on('updateTitle', (newTitle) => {t
+        socket.broadcast.to(user.roomName).emit("updateTitle", newTitle);
       });
 
       // Получаем vote и возвращаем клиенту обновленный массив votes
@@ -87,6 +94,19 @@ io.on("connection", (socket) => {
         console.log(newVotes, '= VOTES');
         io.to(user.roomName).emit("newVotes", newVotes);
       });
+
+      // Оповещение всех участников, когда дилер отменил игру
+      socket.on("gameCanceled", () => {
+        io.to(user.roomName).emit("gameCanceled");
+        clearUsers();
+      });
+
+      // Обработчик выхода из игры по кнопке Exit
+      socket.on('exitGame', () => {
+        socket.emit('confirmedExit');
+        const newUsers = removeUser(socket.id);
+        io.to(user.roomName).emit("playerLeft", newUsers);
+      }); 
 
       socket.on("disconnect", () => {
         const newUsers = handleUserDisconnection(socket.id);
