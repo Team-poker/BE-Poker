@@ -6,13 +6,6 @@ const io = require("socket.io")(server, {
   },
 });
 
-io.origins((origin, callback) => {
-  if (origin !== 'https://team-poker.netlify.app/') {
-      return callback('origin not allowed', false);
-  }
-  callback(null, true);
-});
-
 const port = process.env.PORT || 3000;
 const {
   getCurrentUser,
