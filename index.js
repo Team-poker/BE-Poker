@@ -5,6 +5,8 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
+
+io.set('origins', '*:*');
 const port = process.env.PORT || 3000;
 const {
   getCurrentUser,
