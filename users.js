@@ -30,6 +30,10 @@ function handleUserDisconnection(id) {
   return usersList;
 }
 
+function clearUsers() {
+  usersList.splice(0, usersList.length);
+}
+
 // called when the user leaves the chat and its user object deleted from array
 function userDisconnect(id) {
   const index = usersList.findIndex((user) => user.id === id);
@@ -45,4 +49,5 @@ module.exports = {
   userDisconnect,
   getUsersList,
   handleUserDisconnection,
+  clearUsers,
 };

@@ -12,6 +12,7 @@ const {
   joinUser,
   getUsersList,
   handleUserDisconnection,
+  clearUsers,
 } = require("./users.js");
 
 const {updateVotes} = require('./votes.js');
@@ -86,6 +87,12 @@ io.on("connection", (socket) => {
         const newVotes = updateVotes(vote);
         console.log(newVotes, '= VOTES');
         io.to(user.roomName).emit("newVotes", newVotes);
+      });
+
+      // Оповещение всех участников, когда дилер отменил игру
+      socket.on("gameCanceled", () => {
+        io.to(user.roomName).emit("gameCanceled");
+        clearUsers();
       });
 
       socket.on("disconnect", () => {
