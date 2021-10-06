@@ -85,8 +85,8 @@ io.on("connection", (socket) => {
         socket.broadcast.to(user.roomName).emit("setIssue", name);
       });
 
-      socket.on('updateTitle', (newTitle) => {t
-        socket.broadcast.to(user.roomName).emit("updateTitle", newTitle);
+      socket.on("updateTitle", (newTitle) => {
+        socket.broadcast.to(user.roomName).emit("editTitle", newTitle);
       });
 
       // Получаем vote и возвращаем клиенту обновленный массив votes
