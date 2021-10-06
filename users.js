@@ -25,7 +25,7 @@ function getUsersList() {
 function handleUserDisconnection(id) {
   // Если ушел дилер - нужен новый дилер
   const needNewDealer = usersList.every((user) => !user.dealer);
-  if (needNewDealer) usersList[0].dealer = true;
+  if (needNewDealer && usersList.length > 0) usersList[0].dealer = true;
 
   return usersList;
 }
